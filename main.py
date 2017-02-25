@@ -1,85 +1,40 @@
 '''
     Black Jack Application
+    main.py
     Author: William Christie
     copyright 2017 William Christie
-    Last modified date: 1/30/17
+    Last modified date: 2/2/17
 '''
-# Import modules
-from random import randint
 
-# Set Constants
-CONST_DECK_NUM = 52
-CONST_FACE_CARD_COUNT = 16
-CONST_ACE_COUNT = 4
-CONST_NUM_CARD_COUNT = 52 - 16 - 4
+# import modules
+from blackJackClass import BlackJackDeck
 
-class BlackJackDeck:
-    ''' black jack deck class for game'''
+def rules():
+    ''' display black jack rules and odds '''
+    print("\nBlack Jack Rules!\n")
+    print("Minimum bet is 5 chips")
+    print("Black Jacks pay 3-2 odds")
+    print("Regular wins give 2-1 odds")
+    print("Dealer Black Jacks are instant wins for the house")
+    print("Surrenders return 50% of the chips")
+    print("To view rules: type h when asked for input")
 
-    def draw(self):
-        ''' Draw a card from the deck '''
-        card = randint(2, 11)
-        return card
-
-    def __init__(self, number):
-        ''' intial deck setup '''
-        self.deckcount = number * CONST_DECK_NUM
-        self.facecount = number * CONST_FACE_CARD_COUNT
-        self.acecount = number * CONST_ACE_COUNT
-        self.numcount = number * CONST_NUM_CARD_COUNT
-        self.hand = []
-        self.chipcount = 500
-
-    def deal(self):
-        ''' draw 2 from the deck from deck '''
-        card1 = self.draw()
-        card2 = self.draw()
-
-        self.hand.extend([card1, card2])
-
-        # ace handling here?
-
-
-    def hit(self):
-        ''' draw another card from the deck, add to hand '''
-        card = self.draw()
-        self.hand.append(card)
-
-    def viewhand(self):
-        ''' view current hand and give total '''
-        total = 0
-        iterator = 0
-
-        print('/nIn your current hand:/n')
-
-        for card in self.hand:
-            print('Card ' + str(iterator + 1) + ' gives you ' + str(self.hand[card-1]) + ' points')
-            total += self.hand[card-1]
-
-        if total > 21:
-            print('Ouch! You\'re over 21 points!')
-        else:
-            print('Your current total points is: ' + str(total))
-        
-        return total
-    
-    def endhand(self):
-        ''' ends hand called by stay, surrender, or overage, updates chip totals '''
-        card_total = self.viewhand()
-
-            # if dealer > user, lose
-            # if dealer < user, win
-            # if dealer = user, win
-        
-
+def menu():
+    ''' display menu options'''
+    print("Menu:\nPlease use the keyboard to enter your choice\n\t",
+          "r: to display Black Jack rules\n\t",
+          "v: to view hand"
+          "h: to hit\n\t",
+          "s: to stand\n\t",
+          "d: to double\n\t",
+          "x: to surrender\n\t",
+          "e: to end the game")
 
 def main():
     ''' main function for black jack game '''
     print('\n\nWelcome to BlackJack!!!!\n\n')
 
-
     num_decks = int(input('Please enter the number of decks to use (1, 2, 6, 8)\n: '))
-
 
     unchecked = True
     while unchecked:
@@ -90,18 +45,35 @@ def main():
                                   "use (1, 2, 6, 8)\n: "))
 
     if num_decks == 1:
-        print("You have selected to play BlackJack against the computer with ",
-              + str(num_decks) + " deck!\n\nDealing...")
+        print("You have selected to play BlackJack against the computer with",
+              " " + str(num_decks) + " deck!\n\nDealing...")
     else:
-        print("You have selected to play BlackJack against the computer with ",
-              + str(num_decks) + " decks!\n\nDealing...")
+        print("You have selected to play BlackJack against the computer with",
+              " " + str(num_decks) + " decks!\n\nDealing...")
 
-    print("You have been allocated 500 chips to start the game! Good luck!")
+    print("You have been allocated 500 chips to start! Good luck!\n")
 
     game = BlackJackDeck(num_decks)
-    game.deal()
+    game_not_done = True
+    while game_not_done:
 
-    game.viewhand()
+        game.deal()
+        hand_not_done = True
+
+        while hand_not_done:
+            menu()
+            choice = str(input("Select Your Choice"))
+            choice.lower()
+            if choice == "r":
+                rules()
+            elif choice == "v":
+                game.viewhand()
+            elif choice == "h":
+                game.hit()
+            elif choice == "s":
+                game.endhand()
+                hand_not_done = False
+
 
 if __name__ == "__main__":
     main()
